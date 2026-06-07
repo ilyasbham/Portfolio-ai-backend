@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
@@ -8,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 # ---------------- MODEL ----------------
-model = SentenceTransformer("all-MiniLM-L6-v2")
+SentenceTransformer("paraphrase-MiniLM-L3-v2")
 
 data = [
     {"question":"What is your name?","answer":"My name is Ilyas Bham."},
@@ -139,4 +141,5 @@ def home():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
