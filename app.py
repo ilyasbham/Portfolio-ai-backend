@@ -7,7 +7,6 @@ CORS(app)
 
 # ---------------- DATA ----------------
 data = [
-   data = [
     {"question":"What is your name?","answer":"My name is Ilyas Bham."},
     {"question":"Who are you?","answer":"I am Ilyas Bham, a Computer Engineering student and aspiring software engineer."},
     {"question":"Where are you from?","answer":"I am originally from Myanmar and currently studying in Turkey."},
@@ -81,7 +80,7 @@ data = [
     {"question":"Do you create content?","answer":"I plan to create educational programming content and Python tutorials on YouTube."},
     {"question":"What kind of software can you build?","answer":"Web applications, REST APIs, Android apps, management systems, AI chatbots, and database-driven applications."}
 ]
-]
+
 
 # ---------------- SIMPLE AI LOGIC (NO ML MODEL) ----------------
 def simple_similarity(user_q, stored_q):
