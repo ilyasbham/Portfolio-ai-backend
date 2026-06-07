@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -8,22 +9,20 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 
-# ---------------- MODEL (FIXED) ----------------
-model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+# ---------------- MODEL (LIGHTWEIGHT) ----------------
+# IMPORTANT: smaller model = prevents Render 512MB crash
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
+# ---------------- DATA ----------------
 data = [
     {"question":"What is your name?","answer":"My name is Ilyas Bham."},
-    {"question":"Who are you?","answer":"I am Ilyas Bham, a Computer Engineering student and aspiring software engineer."},
-    {"question":"Where are you from?","answer":"I am originally from Myanmar and currently studying in Turkey."},
-    {"question":"Which university do you study at?","answer":"I study at Karabuk University in Turkey."},
-    {"question":"What is your major?","answer":"My major is Computer Engineering."},
-    {"question":"What year are you in?","answer":"I am in my final year of Computer Engineering."},
-    {"question":"What is your GPA?","answer":"My GPA is approximately 2.7."},
-    {"question":"What programming languages do you know?","answer":"I know Java, Python, JavaScript, SQL, HTML, CSS, and Kotlin."},
-    {"question":"What projects have you built?","answer":"Portfolio, Employee System, Book Store, Resume Builder."},
+    {"question":"What is your major?","answer":"Computer Engineering."},
+    {"question":"What projects have you built?","answer":"Portfolio, Employee System, Book Store."},
+    {"question":"Where do you study?","answer":"I study at Karabuk University in Turkey."},
+    {"question":"What programming languages do you know?","answer":"Java, Python, JavaScript, SQL, HTML, CSS, Kotlin."}
 ]
 
-# ---------------- EMBEDDINGS ----------------
+# ---------------- PRE-COMPUTE EMBEDDINGS (IMPORTANT FIX) ----------------
 questions = [d["question"] for d in data]
 embeddings = model.encode(questions)
 
@@ -62,18 +61,23 @@ def query_ai(user_question):
         "alternatives": [x["answer"] for x in top3[1:]]
     }
 
-# ---------------- API ----------------
+# ---------------- ROUTES ----------------
 @app.route("/chat", methods=["POST"])
 def chat():
-    user_message = request.json["message"]
-    return jsonify(query_ai(user_message))
+    data = request.get_json()
+    message = data.get("message", "")
+
+    result = query_ai(message)
+
+    return jsonify(result)
 
 
 @app.route("/", methods=["GET"])
 def home():
-    return "AI Backend is running"
+    return "AI Backend Running 🚀"
 
-# ---------------- RUN (RENDER SAFE) ----------------
+
+# ---------------- RENDER FIX ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
