@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+print("step 1")
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -11,8 +12,10 @@ CORS(app)
 
 # ---------------- MODEL (LIGHTWEIGHT) ----------------
 # IMPORTANT: smaller model = prevents Render 512MB crash
+print("step 2")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
+print("step 3")
 # ---------------- DATA ----------------
 data = [
     {"question":"What is your name?","answer":"My name is Ilyas Bham."},
